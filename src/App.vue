@@ -5,7 +5,13 @@
                 <li><a>Welcome!</a></li>
                 <li>
                     <div class="inputWrapper">
-                        <InputComp/>
+                        <div id="form">
+                            <label>
+                                <input id='textInput' v-on:keyup.enter="updateData()" v-model="message"
+                                       placeholder="Enter Address or Zip">
+                            </label>
+                            <button id='textButton' v-on:click="updateData()">Submit</button>
+                        </div>
                     </div>
                 </li>
                 <li>
@@ -20,8 +26,8 @@
         </div>
 
         <div class="visualsWrapper">
-            <WeatherTest id="weather"/>
-            <MapTest id="map"/>
+            <!-- <WeatherTest id="weather"/>-->
+            <Map id="map"/>
         </div>
 
 
@@ -29,16 +35,24 @@
 </template>
 
 <script>
-    import WeatherTest from "./components/WeatherTest";
-    import MapTest from "./components/MapTest";
-    import Input from "./components/Input";
+
+    import Map from "./components/Map";
+
 
     export default {
         name: 'app',
         components: {
-            WeatherTest,
-            MapTest,
-            InputComp: Input
+            Map
+        },
+        data() {
+            return {
+                message: '',
+            }
+        },
+        methods: {
+            updateData() {
+                this.$root.$emit("updateVisuals", this.message);
+            }
         }
     }
 </script>
@@ -98,7 +112,6 @@
     .visualsWrapper {
         border: 3px solid white;
         border-radius: 4px;
-        width: 100%;
         font-size: 46px;
         text-align: center;
         position: relative;
@@ -109,17 +122,20 @@
         position: absolute;
         top: 0;
         left: 0;
-        background: red;
         width: 50%;
         height: 100%;
     }
 
-    #weather {
-        position: absolute;
-        background: aqua;
-        top: 0;
-        right: 0;
-        width: 50%;
-        height: 100%;
+    
+    #textInput {
+        height: 50px;
+        font-size: 30pt;
+    }
+
+    #textButton {
+        height: 50px;
+        font-size: 30pt;
+        color: #292C34;
+        background: white
     }
 </style>
