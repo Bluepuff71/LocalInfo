@@ -126,7 +126,7 @@
         height: 100%;
     }
 
-    
+
     #textInput {
         height: 50px;
         font-size: 30pt;
