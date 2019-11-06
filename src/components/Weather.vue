@@ -2,13 +2,10 @@
   <b-card no-body v-if="currentWeather !== null">
     <b-card-body class="text-center p-2">
       <i :class="weatherIcon" style="font-size: 90pt; line-height:normal"></i>
-      <h1
-        class="text-capitalize"
-        :key="index"
-        v-for="(weather, index) in currentWeather.weather"
-      >{{index > 0 ? " and " : ""}}{{weather.description}}</h1>
-      <h2>{{toFahrenheit(currentWeather.main.temp)}}°F</h2>
+      <h2 class="text-capitalize">{{weatherDescription}}</h2>
+      <h2>Temp: {{currentTemp}}°F</h2>
       <h2>Humidity: {{currentWeather.main.humidity}}%</h2>
+      <h2>Wind: {{currentWeather.wind.speed}}mph</h2>
     </b-card-body>
   </b-card>
 </template>
@@ -42,14 +39,22 @@ export default {
   },
   computed: {
     weatherIcon: function() {
-      console.log(Date.now() / 1000);
-      console.log(this.currentWeather.sys.sunset);
       return (
         "wi wi-owm-" +
         this.getIconState(this.currentWeather.sys) +
         "-" +
         this.currentWeather.weather[0].id
       );
+    },
+    currentTemp: function(){
+      return Math.round(this.currentWeather.main.temp);
+    },
+    weatherDescription: function(){
+      var description = "";
+      this.currentWeather.weather.forEach((weather, index) => {
+        description += (index > 0 ? " and " : "") + weather.description
+      });
+      return description;
     }
   },
   methods: {
@@ -82,7 +87,7 @@ export default {
               response.data.results[0].geometry.lat +
               "&lon=" +
               response.data.results[0].geometry.lng +
-              "&appid=" +
+              "&units=imperial&appid=" +
               process.env.VUE_APP_OPEN_WEATHER_KEY,
             responseType: "json"
           })
