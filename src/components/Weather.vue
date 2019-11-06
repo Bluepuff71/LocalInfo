@@ -1,8 +1,9 @@
 <template>
   <b-card no-body v-if="currentWeather !== null">
     <b-card-body class="text-center p-2">
-      <i :class="weatherIcon + ' mb-4' " style="font-size: 108pt;"></i>
-      <h1 class="text-capitalize"
+      <i :class="weatherIcon" style="font-size: 90pt; line-height:normal"></i>
+      <h1
+        class="text-capitalize"
         :key="index"
         v-for="(weather, index) in currentWeather.weather"
       >{{index > 0 ? " and " : ""}}{{weather.description}}</h1>
@@ -41,14 +42,25 @@ export default {
   },
   computed: {
     weatherIcon: function() {
+      console.log(Date.now() / 1000);
+      console.log(this.currentWeather.sys.sunset);
       return (
         "wi wi-owm-" +
-        (Date.now() > this.currentWeather.sys.sunset ? "night-" : "day-") +
+        this.getIconState(this.currentWeather.sys) +
+        "-" +
         this.currentWeather.weather[0].id
       );
     }
   },
   methods: {
+    getIconState(sys) {
+      const currentTime = Math.round(Date.now() / 1000);
+      if (currentTime > sys.sunset || currentTime < sys.sunrise) {
+        return "night";
+      } else {
+        return "day";
+      }
+    },
     toFahrenheit(kelvin) {
       return Math.round((kelvin - 273.15) * (9 / 5) + 32);
     },
@@ -58,7 +70,8 @@ export default {
         url:
           "https://api.opencagedata.com/geocode/v1/json?q=" +
           query +
-          "&key=411bb6a242ce43e79f7b83fb19902c4e",
+          "&key=" +
+          process.env.VUE_APP_OPEN_CAGE_KEY,
         responseType: "json"
       })
         .then(response => {
@@ -69,7 +82,8 @@ export default {
               response.data.results[0].geometry.lat +
               "&lon=" +
               response.data.results[0].geometry.lng +
-              "&appid=521541c0b63b06e83818edd25ea820e9",
+              "&appid=" +
+              process.env.VUE_APP_OPEN_WEATHER_KEY,
             responseType: "json"
           })
             .then(response => {
