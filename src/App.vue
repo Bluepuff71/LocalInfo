@@ -18,7 +18,7 @@
                     <div class="creditWrapper">
                         <p>Dalton Eschberger</p>
                         <p>Emery Porter</p>
-                        <p>Jeffery Lance</p>
+                        <p>Jeffrey Lance</p>
                         <p>Mark Stelluti</p>
                     </div>
                 </li>
