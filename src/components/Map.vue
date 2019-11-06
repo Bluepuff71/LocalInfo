@@ -1,35 +1,30 @@
 <template>
-    <div class='mainWrapper'>
-        <iframe
-                width=100%
-                height=100%
-                style="border:0"
-                :src="defaultSrc" allowfullscreen>
-        </iframe>
-    </div>
+  <b-card no-body class="h-100">
+    <b-card-body class="p-2">
+      <iframe
+        width="100%"
+        height="100%"
+        style="border:0"
+        :src="'https://www.google.com/maps/embed/v1/place?key=AIzaSyDhYnee1SxMDL2hiaZ_Vi5WNNrCIyNo3JA&q=' + location"
+        allowfullscreen
+      ></iframe>
+    </b-card-body>
+  </b-card>
 </template>
 
 <script>
-    export default {
-        name: "Map",
-        data() {
-            return {
-                defaultSrc: "https://www.google.com/maps/embed/v1/place?key=AIzaSyDhYnee1SxMDL2hiaZ_Vi5WNNrCIyNo3JA&q=Texas+Tech",
-            }
-        },
-        methods: {
-            updateMap(message) {
-                this.defaultSrc = "https://www.google.com/maps/embed/v1/place?key=AIzaSyDhYnee1SxMDL2hiaZ_Vi5WNNrCIyNo3JA&q=" + message;
-            }
-        },
-        mounted() {
-            this.$root.$on("updateVisuals", (message) => {
-                this.updateMap(message);
-            });
-        }
+import { BCard, BCardBody } from "bootstrap-vue";
+export default {
+  name: "Map",
+  components: {
+    BCard,
+    BCardBody
+  },
+  props: {
+    location: {
+      type: String,
+      required: true
     }
+  }
+};
 </script>
-
-<style scoped>
-
-</style>
