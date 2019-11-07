@@ -16,7 +16,7 @@
     </b-row>
     <b-row align-h="center" class="fixed-bottom">
       <p class="text-muted text-center font-weight-light">
-        Built by Dalton Eschberger, Emery Porter, Jeffery Lance, and Mark Stelluti.
+        Built by Dalton Eschberger, Emery Porter, Jeffrey Lance, and Mark Stelluti.
       </p>
     </b-row>
   </b-container>
