@@ -1,13 +1,11 @@
 <template>
   <b-card no-body v-if="currentWeather !== null">
     <b-card-body class="text-center p-2">
-      <i :class="weatherIcon + ' mb-4' " style="font-size: 108pt;"></i>
-      <h1 class="text-capitalize"
-        :key="index"
-        v-for="(weather, index) in currentWeather.weather"
-      >{{index > 0 ? " and " : ""}}{{weather.description}}</h1>
-      <h2>{{toFahrenheit(currentWeather.main.temp)}}°F</h2>
+      <i :class="weatherIcon" style="font-size: 90pt; line-height:normal"></i>
+      <h2 class="text-capitalize">{{weatherDescription}}</h2>
+      <h2>Temp: {{currentTemp}}°F</h2>
       <h2>Humidity: {{currentWeather.main.humidity}}%</h2>
+      <h2>Wind: {{currentWeather.wind.speed}}mph</h2>
     </b-card-body>
   </b-card>
 </template>
@@ -43,12 +41,31 @@ export default {
     weatherIcon: function() {
       return (
         "wi wi-owm-" +
-        (Date.now() > this.currentWeather.sys.sunset ? "night-" : "day-") +
+        this.getIconState(this.currentWeather.sys) +
+        "-" +
         this.currentWeather.weather[0].id
       );
+    },
+    currentTemp: function(){
+      return Math.round(this.currentWeather.main.temp);
+    },
+    weatherDescription: function(){
+      var description = "";
+      this.currentWeather.weather.forEach((weather, index) => {
+        description += (index > 0 ? " and " : "") + weather.description
+      });
+      return description;
     }
   },
   methods: {
+    getIconState(sys) {
+      const currentTime = Math.round(Date.now() / 1000);
+      if (currentTime > sys.sunset || currentTime < sys.sunrise) {
+        return "night";
+      } else {
+        return "day";
+      }
+    },
     toFahrenheit(kelvin) {
       return Math.round((kelvin - 273.15) * (9 / 5) + 32);
     },
@@ -58,7 +75,8 @@ export default {
         url:
           "https://api.opencagedata.com/geocode/v1/json?q=" +
           query +
-          "&key=411bb6a242ce43e79f7b83fb19902c4e",
+          "&key=" +
+          process.env.VUE_APP_OPEN_CAGE_KEY,
         responseType: "json"
       })
         .then(response => {
@@ -69,7 +87,8 @@ export default {
               response.data.results[0].geometry.lat +
               "&lon=" +
               response.data.results[0].geometry.lng +
-              "&appid=521541c0b63b06e83818edd25ea820e9",
+              "&units=imperial&appid=" +
+              process.env.VUE_APP_OPEN_WEATHER_KEY,
             responseType: "json"
           })
             .then(response => {
