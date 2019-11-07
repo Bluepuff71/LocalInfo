@@ -1,7 +1,9 @@
 <template>
   <b-input-group>
     <b-input-group-prepend v-if="geolocation">
-      <b-button variant="info" @click="onCurrentLocationButton">Current Location</b-button>
+      <b-button variant="info" @click="onCurrentLocationButton" class="material-icons md-18">
+        my_location
+      </b-button>
     </b-input-group-prepend>
     <b-form-input
       v-model="location"
@@ -37,7 +39,7 @@ export default {
     };
   },
   computed: {
-    geolocation: function () {
+    geolocation: function() {
       return navigator.geolocation;
     }
   },
@@ -51,12 +53,15 @@ export default {
           method: "get",
           url:
             "https://api.opencagedata.com/geocode/v1/json?q=" +
-            position.coords.latitude + "+" + position.coords.longitude +
-            "&key=" + process.env.VUE_APP_OPEN_CAGE_KEY,
+            position.coords.latitude +
+            "+" +
+            position.coords.longitude +
+            "&key=" +
+            process.env.VUE_APP_OPEN_CAGE_KEY,
           responseType: "json"
         })
           .then(response => {
-            this.$set(this, 'location', response.data.results[0].formatted)
+            this.$set(this, "location", response.data.results[0].formatted);
             this.$emit("submit", response.data.results[0].formatted);
           })
           .catch(error => {
