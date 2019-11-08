@@ -4,15 +4,17 @@
       <h1 class="display-1">Local Info</h1>
     </b-row>
     <b-row class="p-3">
-      <LocInput @submit="onSubmit"/>
+      <LocInput :disabled="numReady === 0" @submit="onSubmit"/>
     </b-row>
     <b-row v-if="location !== ''">
       <b-col>
-        <Map :location="location" />
+        <Map v-show="numReady == 2" :location="location" @ready="onReady"/>
       </b-col>
+      <b-spinner v-if="numReady < 2" style="width: 3rem; height: 3rem;"></b-spinner>
       <b-col>
-        <Weather :location="location" />
+        <Weather v-show="numReady == 2" :location="location" @ready="onReady" />
       </b-col>
+     
     </b-row>
     <b-row align-h="center" class="fixed-bottom">
       <p class="text-muted text-center font-weight-light">
@@ -26,7 +28,7 @@
 const Map = () => import('./components/Map');
 const Weather = () => import('./components/Weather');
 import LocInput from "./components/Input";
-import { BContainer, BRow, BCol } from "bootstrap-vue";
+import { BContainer, BRow, BCol, BSpinner } from "bootstrap-vue";
 export default {
   name: "app",
   components: {
@@ -35,16 +37,24 @@ export default {
     LocInput,
     BContainer,
     BRow,
-    BCol
+    BCol,
+    BSpinner
   },
   data() {
     return {
-      location: ""
+      location: "",
+      numReady: 0
     };
   },
   methods: {
     onSubmit(loc) {
+      if(this.location !== loc){
+        this.$set(this,"numReady", 0);
+      }
       this.$set(this, "location", loc);
+    },
+    onReady(){
+      this.$set(this,"numReady", this.numReady + 1);
     }
   }
 };

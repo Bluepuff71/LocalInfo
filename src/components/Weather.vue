@@ -93,11 +93,10 @@ export default {
           })
             .then(response => {
               this.$set(this, "currentWeather", response.data);
+              this.$emit("ready");
             });
         });
     }
   }
 };
 </script>
-<style>
-</style>
