@@ -11,8 +11,7 @@
 </template>
 <script>
 import axios from "axios";
-const BCardBody = () => import('bootstrap-vue');
-const BCard = () => import('bootstrap-vue');
+import { BCard, BCardBody } from 'bootstrap-vue';
 export default {
   components: {
     BCard,
@@ -84,7 +83,7 @@ export default {
           axios({
             method: "get",
             url:
-              "http://api.openweathermap.org/data/2.5/weather?lat=" +
+              "https://api.openweathermap.org/data/2.5/weather?lat=" +
               response.data.results[0].geometry.lat +
               "&lon=" +
               response.data.results[0].geometry.lng +
