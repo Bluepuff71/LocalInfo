@@ -17,10 +17,10 @@
 </template>
 
 <script>
-const BInputGroupPrepend = () => import('bootstrap-vue');
 import {
   BButton,
   BFormInput,
+  BInputGroupPrepend,
   BInputGroupAppend,
   BInputGroup
 } from "bootstrap-vue";
