@@ -17,12 +17,12 @@
 </template>
 
 <script>
+const BInputGroupPrepend = () => import('bootstrap-vue');
 import {
   BButton,
   BFormInput,
   BInputGroupAppend,
-  BInputGroup,
-  BInputGroupPrepend
+  BInputGroup
 } from "bootstrap-vue";
 import axios from "axios";
 export default {

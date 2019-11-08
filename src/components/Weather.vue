@@ -11,7 +11,8 @@
 </template>
 <script>
 import axios from "axios";
-import { BCard, BCardBody } from "bootstrap-vue";
+const BCardBody = () => import('bootstrap-vue');
+const BCard = () => import('bootstrap-vue');
 export default {
   components: {
     BCard,

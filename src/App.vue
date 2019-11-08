@@ -23,8 +23,8 @@
 </template>
 
 <script>
-import Map from "./components/Map";
-import Weather from "./components/Weather";
+const Map = () => import('./components/Map');
+const Weather = () => import('./components/Weather');
 import LocInput from "./components/Input";
 import { BContainer, BRow, BCol } from "bootstrap-vue";
 export default {
@@ -49,8 +49,3 @@ export default {
   }
 };
 </script>
-<style>
-.creditText{
-    font-size: 7pt
-}
-</style>
