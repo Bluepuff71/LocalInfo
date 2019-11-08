@@ -24,7 +24,7 @@
       v-show="location !== ''"
       class="material-icons md-18 clear-button"
       active-class=""
-      :disabled="disabled"
+      :disabled="showSpinner || disabled"
       style=""
       @click="onClearClick"
     >clear</b-button>
@@ -85,6 +85,7 @@ export default {
       }
     },
     onCurrentLocationButton() {
+      this.$set(this, 'location', ''); 
       this.$set(this, "showSpinner", true);
       navigator.geolocation.getCurrentPosition(position => {
         axios({
