@@ -93,14 +93,7 @@ export default {
           })
             .then(response => {
               this.$set(this, "currentWeather", response.data);
-            })
-            .catch(error => {
-              console.log(error);
-              console.log(query);
             });
-        })
-        .catch(error => {
-          console.log(error);
         });
     }
   }

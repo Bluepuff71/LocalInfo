@@ -63,9 +63,6 @@ export default {
           .then(response => {
             this.$set(this, "location", response.data.results[0].formatted);
             this.$emit("submit", response.data.results[0].formatted);
-          })
-          .catch(error => {
-            console.error(error);
           });
       });
     }
