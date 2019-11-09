@@ -11,7 +11,7 @@
 </template>
 <script>
 import axios from "axios";
-import { BCard, BCardBody } from 'bootstrap-vue';
+import { BCard, BCardBody } from "bootstrap-vue";
 export default {
   components: {
     BCard,
@@ -46,13 +46,13 @@ export default {
         this.currentWeather.weather[0].id
       );
     },
-    currentTemp: function(){
+    currentTemp: function() {
       return Math.round(this.currentWeather.main.temp);
     },
-    weatherDescription: function(){
+    weatherDescription: function() {
       var description = "";
       this.currentWeather.weather.forEach((weather, index) => {
-        description += (index > 0 ? " and " : "") + weather.description
+        description += (index > 0 ? " and " : "") + weather.description;
       });
       return description;
     }
@@ -80,21 +80,31 @@ export default {
         responseType: "json"
       })
         .then(response => {
-          axios({
-            method: "get",
-            url:
-              "https://api.openweathermap.org/data/2.5/weather?lat=" +
-              response.data.results[0].geometry.lat +
-              "&lon=" +
-              response.data.results[0].geometry.lng +
-              "&units=imperial&appid=" +
-              process.env.VUE_APP_OPEN_WEATHER_KEY,
-            responseType: "json"
-          })
-            .then(response => {
-              this.$set(this, "currentWeather", response.data);
-              this.$emit("ready");
-            });
+          if (response.data.results.length === 0) {
+            this.$emit("error", 404);
+          } else {
+            axios({
+              method: "get",
+              url:
+                "https://api.openweathermap.org/data/2.5/weather?lat=" +
+                response.data.results[0].geometry.lat +
+                "&lon=" +
+                response.data.results[0].geometry.lng +
+                "&units=imperial&appid=" +
+                process.env.VUE_APP_OPEN_WEATHER_KEY,
+              responseType: "json"
+            })
+              .then(response => {
+                this.$set(this, "currentWeather", response.data);
+                this.$emit("ready");
+              })
+              .catch(error => {
+                this.$emit("error", error);
+              });
+          }
+        })
+        .catch(error => {
+          this.$emit("error", error);
         });
     }
   }
