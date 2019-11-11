@@ -69,6 +69,17 @@ export default {
     toFahrenheit(kelvin) {
       return Math.round((kelvin - 273.15) * (9 / 5) + 32);
     },
+    getHighestConfidenceIndex(results){
+      var highest = {confidence: -1};
+      var highestIndex = -1;
+      results.forEach((result, index) => {
+        if(result.confidence > highest.confidence){
+          highest = result;
+          highestIndex = index;
+        }
+      });
+      return highestIndex;
+    },
     setByLat(query) {
       axios({
         method: "get",
@@ -87,9 +98,9 @@ export default {
               method: "get",
               url:
                 "https://api.openweathermap.org/data/2.5/weather?lat=" +
-                response.data.results[0].geometry.lat +
+                response.data.results[this.getHighestConfidenceIndex(response.data.results)].geometry.lat +
                 "&lon=" +
-                response.data.results[0].geometry.lng +
+                response.data.results[this.getHighestConfidenceIndex(response.data.results)].geometry.lng +
                 "&units=imperial&appid=" +
                 process.env.VUE_APP_OPEN_WEATHER_KEY,
               responseType: "json"
