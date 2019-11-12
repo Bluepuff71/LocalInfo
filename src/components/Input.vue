@@ -95,42 +95,51 @@ export default {
       this.$set(this, "location", { formatted: "" });
       this.$set(this, "showSpinner", true);
       this.$emit("loading");
-      navigator.geolocation.getCurrentPosition(position => {
-        if (
-          prevLocation.geometry &&
-          this.approx(position.coords.latitude, prevLocation.geometry.lat) &&
-          this.approx(position.coords.longitude, prevLocation.geometry.lng)
-        ) {
-          this.$set(this, "showSpinner", false);
-          this.$set(this, "location", prevLocation);
-          this.$emit("cancel");
-        } else {
-          axios({
-            method: "get",
-            url:
-              "https://api.opencagedata.com/geocode/v1/json?q=" +
-              position.coords.latitude +
-              "+" +
-              position.coords.longitude +
-              "&key=" +
-              process.env.VUE_APP_OPEN_CAGE_KEY,
-            responseType: "json"
-          })
-            .then(response => {
-              if (response.data.results[0].formatted === prevLocation.formatted) {
-                this.$set(this, "showSpinner", false);
-                this.$emit("cancel");
-              } else {
-                this.$set(this, "showSpinner", false);
-                this.$set(this, "location", response.data.results[0]);
-                this.$emit("submit", response.data.results[0].formatted);
-              }
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          if (
+            prevLocation.geometry &&
+            this.approx(position.coords.latitude, prevLocation.geometry.lat) &&
+            this.approx(position.coords.longitude, prevLocation.geometry.lng)
+          ) {
+            this.$set(this, "showSpinner", false);
+            this.$set(this, "location", prevLocation);
+            this.$emit("cancel");
+          } else {
+            axios({
+              method: "get",
+              url:
+                "https://api.opencagedata.com/geocode/v1/json?q=" +
+                position.coords.latitude +
+                "+" +
+                position.coords.longitude +
+                "&key=" +
+                process.env.VUE_APP_OPEN_CAGE_KEY,
+              responseType: "json"
             })
-            .catch(error => {
-              this.$emit("error", error);
-            });
+              .then(response => {
+                if (
+                  response.data.results[0].formatted === prevLocation.formatted
+                ) {
+                  this.$set(this, "showSpinner", false);
+                  this.$emit("cancel");
+                } else {
+                  this.$set(this, "showSpinner", false);
+                  this.$set(this, "location", response.data.results[0]);
+                  this.$emit("submit", response.data.results[0].formatted);
+                }
+              })
+              .catch(error => {
+                this.$set(this, "showSpinner", false);
+                this.$emit("error", error);
+              });
+          }
+        },
+        error => {
+          this.$set(this, "showSpinner", false);
+          this.$emit("error", error);
         }
-      });
+      );
     }
   }
 };

@@ -4,21 +4,28 @@
       <h1 class="display-1">Local Info</h1>
     </b-row>
     <b-row class="p-3">
-      <LocInput :disabled="disableInput" @submit="onSubmit" @cancel="onInputCancel" @loading="onInputBusy" />
+      <LocInput
+        :disabled="disableInput"
+        @submit="onSubmit"
+        @error="onError"
+        @cancel="onInputCancel"
+        @loading="onInputBusy"
+      />
     </b-row>
-    <b-row v-show="location !== '' && !showSpinner">
-      <b-col>
-        <Map v-show="numReady == 2" :location="location" @ready="onReady" />
-      </b-col>
-      <b-card class="text-center" v-show="error != null">
+    <b-card class="text-center" v-show="error !== ''">
         <i class="material-icons-round md-18" style="font-size: 80pt">mood_bad</i>
         <h2>{{errorText.text}}</h2>
         <h2>{{errorText.solution}}</h2>
-      </b-card>
+    </b-card>
+    <b-row v-show="location !== '' && !showSpinner && error === ''">
       <b-col>
-        <Weather v-show="numReady == 2" :location="location" @ready="onReady" @error="onError"/>
+        <Map v-show="numReady == 2" :location="location" @ready="onReady"/>
+      </b-col>
+      <b-col>
+        <Weather v-show="numReady == 2" :location="location" @ready="onReady" @error="onError" />
       </b-col>
     </b-row>
+    
     <b-row align-h="center" v-show="showSpinner">
       <b-spinner style="width: 3rem; height: 3rem;"></b-spinner>
     </b-row>
@@ -52,16 +59,40 @@ export default {
       location: "",
       numReady: 0,
       disableInput: false,
-      error: null,
+      error: "",
       showSpinner: false
     };
   },
   computed: {
-    errorText: function(){
+    errorText: function() {
       var json = {};
-      if(this.error === 404){
+      if (this.error === "") {
+        json.text = "";
+        json.solution = "";
+      } else if (this.error === 404) {
         json.text = "The specifed location could not be found.";
         json.solution = "Try checking your input.";
+      } else if (this.error.code) {
+        switch (this.error.code) {
+          case this.error.PERMISSION_DENIED:
+            json.text =
+              "Hmm... It seems that your browser has denied me access to your location.";
+            json.solution =
+              "Giving me access to your location should fix this.";
+            break;
+          case this.error.POSITION_UNAVAILABLE:
+            json.text = "Location information is unavailable.";
+            json.solution = "Where are you?";
+            break;
+          case this.error.TIMEOUT:
+            json.text = "The request timed out.";
+            json.solution = "Try reloading the page and try again.";
+            break;
+          case this.error.UNKNOWN_ERROR:
+            json.text = "Hmm... something went wrong.";
+            json.solution = "Try checking your input.";
+            break;
+        }
       } else {
         json.text = "Hmm... something went wrong.";
         json.solution = "Try checking your input.";
@@ -70,25 +101,26 @@ export default {
     }
   },
   methods: {
-    onInputCancel(){
+    onInputCancel() {
       this.$set(this, "showSpinner", false);
       this.$set(this, "disableInput", false);
     },
-    onInputBusy(){
-       this.$set(this, "showSpinner", true);
+    onInputBusy() {
+      this.$set(this, "showSpinner", true);
     },
     onSubmit(loc) {
       if (this.location !== loc) {
         this.$set(this, "showSpinner", true);
-        this.$set(this, "error", null);
+        this.$set(this, "error", "");
         this.$set(this, "numReady", 0);
         this.$set(this, "disableInput", true);
       }
       this.$set(this, "location", loc);
     },
-    onError(err){
-      this.$set(this,"error", err);
+    onError(err) {
+      this.$set(this, "error", err);
       this.$set(this, "disableInput", false);
+      this.$set(this, "showSpinner", false);
     },
     onReady() {
       this.$set(this, "numReady", this.numReady + 1);

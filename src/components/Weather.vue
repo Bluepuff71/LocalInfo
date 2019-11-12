@@ -33,7 +33,9 @@ export default {
       immediate: true,
       deep: true,
       handler(newValue) {
-        this.setByLat(newValue);
+        if(newValue !== ""){
+          this.setByLat(newValue);
+        }
       }
     }
   },
