@@ -16,7 +16,7 @@
       ref="input"
       autofocus
       :disabled="showSpinner || disabled"
-      v-model="location.formatted"
+      v-model.lazy="location.formatted"
       :placeholder="placeHolder"
       v-on:keyup.enter="onClick(location.formatted)"
     ></b-form-input>
@@ -86,9 +86,26 @@ export default {
       this.$refs.input.$el.focus();
     },
     onClick(location) {
-      if (!this.showSpinner) {
-        this.$emit("submit", location);
-      }
+      axios({
+        method: "get",
+        url:
+          "https://api.opencagedata.com/geocode/v1/json?q=" +
+          location +
+          "&key=" +
+          process.env.VUE_APP_OPEN_CAGE_KEY,
+        responseType: "json"
+      })
+        .then(response => {
+          if (!this.showSpinner) {
+            this.$set(this.location, "formatted", location);
+            this.$set(this.location, "lat", response.data.results[0].geometry.lat);
+            this.$set(this.location, "lng", response.data.results[0].geometry.lng);
+            this.$emit("submit", this.location);
+          }
+        })
+        .catch(error => {
+          this.$emit("error", error);
+        });
     },
     onCurrentLocationButton() {
       const prevLocation = this.location;
@@ -118,16 +135,13 @@ export default {
               responseType: "json"
             })
               .then(response => {
-                if (
-                  response.data.results[0].formatted === prevLocation.formatted
-                ) {
-                  this.$set(this, "showSpinner", false);
-                  this.$emit("cancel");
-                } else {
-                  this.$set(this, "showSpinner", false);
-                  this.$set(this, "location", response.data.results[0]);
-                  this.$emit("submit", response.data.results[0].formatted);
-                }
+                this.$set(this, "showSpinner", false);
+                this.$set(this, "location", {
+                  lat: position.coords.latitude,
+                  lng: position.coords.longitude,
+                  formatted: response.data.results[0].formatted
+                });
+                this.$emit("submit", this.location);
               })
               .catch(error => {
                 this.$set(this, "showSpinner", false);

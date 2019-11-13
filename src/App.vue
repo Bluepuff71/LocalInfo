@@ -25,7 +25,6 @@
         <Weather v-show="numReady == 2" :location="location" @ready="onReady" @error="onError" />
       </b-col>
     </b-row>
-    
     <b-row align-h="center" v-show="showSpinner">
       <b-spinner style="width: 3rem; height: 3rem;"></b-spinner>
     </b-row>

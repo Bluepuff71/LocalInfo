@@ -5,7 +5,7 @@
         width="100%"
         height="100%"
         style="border:0"
-        :src="'https://www.google.com/maps/embed/v1/place?key=' + googleAPIKey + '&q=' + location"
+        :src="'https://www.google.com/maps/embed/v1/place?key=' + googleAPIKey + '&q=' + location.formatted"
         allowfullscreen
         @load="onLoad"
       ></iframe>
