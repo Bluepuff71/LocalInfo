@@ -1,7 +1,7 @@
 <template>
   <b-card no-body class="h-100">
     <b-card-body class="p-2">
-      <iframe
+      <iframe v-if="location.formatted !== ''"
         width="100%"
         height="100%"
         style="border:0"
@@ -28,7 +28,7 @@ export default {
   },
   props: {
     location: {
-      type: String,
+      type: Object,
       required: true
     }
   },

@@ -24,7 +24,7 @@ export default {
   },
   props: {
     location: {
-      type: String,
+      type: Object,
       required: true
     }
   },
@@ -33,7 +33,7 @@ export default {
       immediate: true,
       deep: true,
       handler(newValue) {
-        if (newValue !== "") {
+        if (newValue.formatted !== "") {
           this.setByLat(newValue);
         }
       }

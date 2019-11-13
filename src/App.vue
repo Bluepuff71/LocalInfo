@@ -55,7 +55,7 @@ export default {
   },
   data() {
     return {
-      location: "",
+      location: {formatted: ""},
       numReady: 0,
       disableInput: false,
       error: "",
@@ -103,8 +103,12 @@ export default {
     onInputCancel() {
       this.$set(this, "showSpinner", false);
       this.$set(this, "disableInput", false);
+      this.$set(this, "numReady", 2);
     },
     onInputBusy() {
+      this.$set(this, "numReady", 0);
+      this.$set(this, "disableInput", true);
+      this.$set(this, "error", "");
       this.$set(this, "showSpinner", true);
     },
     onSubmit(loc) {

@@ -15,24 +15,20 @@
     <b-form-input
       ref="input"
       autofocus
-      :disabled="showSpinner || disabled"
-      v-model.lazy="location.formatted"
+      :disabled="disabled"
+      v-model.lazy="displayLoc"
       :placeholder="placeHolder"
-      v-on:keyup.enter="onClick(location.formatted)"
+      v-on:keyup.enter="onClick(displayLoc)"
     ></b-form-input>
     <b-button
       v-show="location.formatted !== ''"
       class="material-icons-round md-18 clear-button"
       active-class
-      :disabled="showSpinner || disabled"
+      :disabled="disabled"
       @click="onClearClick"
     >clear</b-button>
     <b-input-group-append>
-      <b-button
-        :disabled="showSpinner || disabled"
-        variant="info"
-        @click="onClick(location.formatted)"
-      >Submit</b-button>
+      <b-button :disabled="disabled" variant="info" @click="onClick(displayLoc)">Submit</b-button>
     </b-input-group-append>
   </b-input-group>
 </template>
@@ -58,6 +54,7 @@ export default {
   },
   data() {
     return {
+      displayLoc: "",
       location: { formatted: "" },
       showSpinner: false
     };
@@ -81,43 +78,60 @@ export default {
     approx(v1, v2) {
       return Math.abs(v1 - v2) <= 0.001;
     },
+    didLocationChange(location) {
+      return this.location.formatted !== location;
+    },
     onClearClick() {
       this.$set(this, "location", { formatted: "" });
       this.$refs.input.$el.focus();
     },
     onClick(location) {
-      axios({
-        method: "get",
-        url:
-          "https://api.opencagedata.com/geocode/v1/json?q=" +
-          location +
-          "&key=" +
-          process.env.VUE_APP_OPEN_CAGE_KEY,
-        responseType: "json"
-      })
-        .then(response => {
-          if (!this.showSpinner) {
-            this.$set(this.location, "formatted", location);
-            this.$set(this.location, "lat", response.data.results[0].geometry.lat);
-            this.$set(this.location, "lng", response.data.results[0].geometry.lng);
-            this.$emit("submit", this.location);
-          }
+      if (this.didLocationChange(location)) {
+        this.$emit("loading");
+        axios({
+          method: "get",
+          url:
+            "https://api.opencagedata.com/geocode/v1/json?q=" +
+            location +
+            "&key=" +
+            process.env.VUE_APP_OPEN_CAGE_KEY,
+          responseType: "json"
         })
-        .catch(error => {
-          this.$emit("error", error);
-        });
+          .then(response => {
+            if (!this.showSpinner) {
+              this.$set(this.location, "formatted", location);
+              this.$set(
+                this.location,
+                "lat",
+                response.data.results[0].geometry.lat
+              );
+              this.$set(
+                this.location,
+                "lng",
+                response.data.results[0].geometry.lng
+              );
+              this.$emit("submit", Object.assign(this.location));
+            }
+          })
+          .catch(error => {
+            this.$emit("error", error);
+          });
+      } else {
+        this.$emit("cancel");
+      }
     },
     onCurrentLocationButton() {
       const prevLocation = this.location;
       this.$set(this, "location", { formatted: "" });
+      this.$set(this, "displayLoc", "");
       this.$set(this, "showSpinner", true);
       this.$emit("loading");
       navigator.geolocation.getCurrentPosition(
         position => {
           if (
-            prevLocation.geometry &&
-            this.approx(position.coords.latitude, prevLocation.geometry.lat) &&
-            this.approx(position.coords.longitude, prevLocation.geometry.lng)
+            prevLocation.lat &&
+            this.approx(position.coords.latitude, prevLocation.lat) &&
+            this.approx(position.coords.longitude, prevLocation.lng)
           ) {
             this.$set(this, "showSpinner", false);
             this.$set(this, "location", prevLocation);
@@ -136,12 +150,17 @@ export default {
             })
               .then(response => {
                 this.$set(this, "showSpinner", false);
+                this.$set(
+                  this,
+                  "displayLoc",
+                  response.data.results[0].formatted
+                );
                 this.$set(this, "location", {
                   lat: position.coords.latitude,
                   lng: position.coords.longitude,
                   formatted: response.data.results[0].formatted
                 });
-                this.$emit("submit", this.location);
+                this.$emit("submit", Object.assign(this.location));
               })
               .catch(error => {
                 this.$set(this, "showSpinner", false);
