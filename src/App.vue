@@ -1,9 +1,14 @@
 <template>
   <b-container>
     <b-row align-h="center">
-      <h1 class="display-1">Local Info</h1>
+      <h1 class="display-1 mb-0">Local Info</h1>
     </b-row>
-    <b-row class="p-3">
+    <b-row align-h="center" class="my-0">
+      <p
+        class="text-muted text-center font-weight-light my-0"
+      >Built by Dalton Eschberger, Emery Porter, Jeffrey Lance, and Mark Stelluti.</p>
+    </b-row>
+    <b-row class="pb-2 pt-2">
       <LocInput
         :disabled="disableInput"
         @submit="onSubmit"
@@ -18,20 +23,15 @@
         <h2>{{errorText.solution}}</h2>
     </b-card>
     <b-row v-show="location !== '' && !showSpinner && error === ''">
-      <b-col>
+      <b-col class="pl-0">
         <Map v-show="numReady == 2" :location="location" @ready="onReady"/>
       </b-col>
-      <b-col>
+      <b-col class="pr-0">
         <Weather v-show="numReady == 2" :location="location" @ready="onReady" @error="onError" />
       </b-col>
     </b-row>
     <b-row align-h="center" v-show="showSpinner">
       <b-spinner style="width: 3rem; height: 3rem;"></b-spinner>
-    </b-row>
-    <b-row align-h="center" class="fixed-bottom">
-      <p
-        class="text-muted text-center font-weight-light"
-      >Built by Dalton Eschberger, Emery Porter, Jeffrey Lance, and Mark Stelluti.</p>
     </b-row>
   </b-container>
 </template>
