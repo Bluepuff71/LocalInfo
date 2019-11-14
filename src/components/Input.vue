@@ -82,7 +82,7 @@ export default {
       return this.location.formatted !== location;
     },
     onClearClick() {
-      this.$set(this, "location", { formatted: "" });
+      this.$set(this, "displayLoc", "");
       this.$refs.input.$el.focus();
     },
     onClick(location) {
