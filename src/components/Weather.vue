@@ -18,7 +18,7 @@
             >
               <template #img>
                 <h2>{{day.date}}{{index === 0 ? ' (Today)' : ''}}{{index === 1 ? ' (Tomorrow)' : ''}}</h2>
-                <i :class="day.icon" style="font-size: 90pt; line-height:normal"></i>
+                <i :class="day.icon" style="font-size: 20vh; line-height:normal"></i>
                 <h2 class="text-capitalize">{{day.desc}}</h2>
                 <h2>Temp: {{day.avgs.minTemp}}°F/{{day.avgs.maxTemp}}°F</h2>
                 <h2>Humidity: {{day.avgs.humidity}}%</h2>
@@ -67,6 +67,7 @@ export default {
       deep: true,
       handler(newValue) {
         if (newValue.formatted !== "") {
+          this.$set(this, 'ready', 0);
           this.setWeatherByLat(newValue);
           this.setForecastByCoords(newValue);
         }
