@@ -1,40 +1,43 @@
 <template>
-    <b-container style="max-width:90%">
-      <b-row align-h="center">
-        <h1 class="display-1 mb-0">Local Info</h1>
-      </b-row>
-      <b-row align-h="center" class="my-0">
-        <p
-                class="text-muted text-center font-weight-light my-0"
-        >Built by Dalton Eschberger, Emery Porter, Jeffrey Lance, and Mark Stelluti.</p>
-      </b-row>
-      <b-row class="pb-2 pt-2">
-        <LocInput
-                :disabled="disableInput"
-                @submit="onSubmit"
-                @error="onError"
-                @cancel="onInputCancel"
-                @loading="onInputBusy"
-        />
-      </b-row>
-      <b-card class="text-center" v-show="error !== ''">
-        <i class="material-icons-round md-18" style="font-size: 80pt">mood_bad</i>
-        <h2>{{errorText.text}}</h2>
-        <h2>{{errorText.solution}}</h2>
-      </b-card>
-      <b-row id="componentRow" v-show="location !== '' && !showSpinner && error === ''" style="height:70vh">
-        <b-col class="pl-0">
-          <Map v-show="numReady == 2" :location="location" @ready="onReady"/>
-        </b-col>
-        <b-col class="pr-0">
-          <Weather v-show="numReady == 2" :location="location" @ready="onReady" @error="onError" style="height:70vh"/>
-        </b-col>
-      </b-row>
-      <b-row align-h="center" v-show="showSpinner">
-        <b-spinner style="width: 3rem; height: 3rem;"></b-spinner>
-      </b-row>
-    </b-container>
-
+  <b-container style="max-width:90%">
+    <b-row align-h="center">
+      <h1 class="display-1 mb-0">Local Info</h1>
+    </b-row>
+    <b-row align-h="center" class="my-0">
+      <p
+        class="text-muted text-center font-weight-light my-0"
+      >Built by Dalton Eschberger, Emery Porter, Jeffrey Lance, and Mark Stelluti.</p>
+    </b-row>
+    <b-row class="pb-2 pt-2">
+      <LocInput
+        :disabled="disableInput"
+        @submit="onSubmit"
+        @error="onError"
+        @cancel="onInputCancel"
+        @loading="onInputBusy"
+      />
+    </b-row>
+    <b-row v-show="error !== ''" align-h="center">
+      <b-col class="px-0">
+        <b-card class="text-center">
+          <i class="material-icons-round md-18" style="font-size: 80pt">mood_bad</i>
+          <h2>{{errorText.text}}</h2>
+          <h2>{{errorText.solution}}</h2>
+        </b-card>
+      </b-col>
+    </b-row>
+    <b-row class="mb-2" v-show="location !== '' && !showSpinner && error === ''">
+      <b-col class="pl-0">
+        <Map v-show="numReady == 2" :location="location" @ready="onReady" />
+      </b-col>
+      <b-col class="pr-0">
+        <Weather v-show="numReady == 2" :location="location" @ready="onReady" @error="onError" />
+      </b-col>
+    </b-row>
+    <b-row align-h="center" v-show="showSpinner">
+      <b-spinner style="width: 3rem; height: 3rem;"></b-spinner>
+    </b-row>
+  </b-container>
 </template>
 
 <script>
@@ -56,7 +59,7 @@ export default {
   },
   data() {
     return {
-      location: {formatted: ""},
+      location: { formatted: "" },
       numReady: 0,
       disableInput: false,
       error: "",
