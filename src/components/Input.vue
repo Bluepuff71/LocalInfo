@@ -21,14 +21,14 @@
       v-on:keyup.enter="onClick(displayLoc)"
     ></b-form-input>
     <b-button
-      v-show="location.formatted !== ''"
+      v-show="displayLoc !== ''"
       class="material-icons-round md-18 clear-button"
       active-class
       :disabled="disabled"
       @click="onClearClick"
     >clear</b-button>
     <b-input-group-append>
-      <b-button :disabled="disabled" variant="info" @click="onClick(displayLoc)">Submit</b-button>
+      <b-button :disabled="disabled || displayLoc === ''" variant="info" @click="onClick(displayLoc)">Submit</b-button>
     </b-input-group-append>
   </b-input-group>
 </template>
@@ -71,7 +71,7 @@ export default {
     placeHolder: function() {
       return this.showSpinner
         ? "Getting current location..."
-        : "Address, Zipcode, or Place";
+        : "Get local information for...";
     }
   },
   methods: {
@@ -86,7 +86,8 @@ export default {
       this.$refs.input.$el.focus();
     },
     onClick(location) {
-      if (this.didLocationChange(location)) {
+      if(location !== ""){
+        if (this.didLocationChange(location)) {
         this.$emit("loading");
         axios({
           method: "get",
@@ -119,6 +120,7 @@ export default {
       } else {
         this.$emit("cancel");
       }
+      }
     },
     onCurrentLocationButton() {
       const prevLocation = this.location;
@@ -135,6 +137,7 @@ export default {
           ) {
             this.$set(this, "showSpinner", false);
             this.$set(this, "location", prevLocation);
+            this.$set(this, 'displayLoc', prevLocation.formatted)
             this.$emit("cancel");
           } else {
             axios({

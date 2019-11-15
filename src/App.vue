@@ -1,7 +1,7 @@
 <template>
   <b-container style="max-width:90%">
     <b-row align-h="center">
-      <h1 class="display-1 mb-0">Local Info</h1>
+      <h2 class="display-1 mb-0">Local-Info</h2>
     </b-row>
     <b-row align-h="center" class="my-0">
       <p
@@ -27,10 +27,10 @@
       </b-col>
     </b-row>
     <b-row class="mb-2" v-show="location !== '' && !showSpinner && error === ''">
-      <b-col class="pl-0">
+      <b-col sm class="pl-0">
         <Map v-show="numReady == 2" :location="location" @ready="onReady" />
       </b-col>
-      <b-col class="pr-0">
+      <b-col sm class="pr-0">
         <Weather v-show="numReady == 2" :location="location" @ready="onReady" @error="onError" />
       </b-col>
     </b-row>
