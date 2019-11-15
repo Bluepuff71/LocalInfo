@@ -17,14 +17,18 @@
         @loading="onInputBusy"
       />
     </b-row>
-    <b-card class="text-center" v-show="error !== ''">
-        <i class="material-icons-round md-18" style="font-size: 80pt">mood_bad</i>
-        <h2>{{errorText.text}}</h2>
-        <h2>{{errorText.solution}}</h2>
-    </b-card>
-    <b-row v-show="location !== '' && !showSpinner && error === ''">
+    <b-row v-show="error !== ''" align-h="center">
+      <b-col class="px-0">
+        <b-card class="text-center">
+          <i class="material-icons-round md-18" style="font-size: 80pt">mood_bad</i>
+          <h2>{{errorText.text}}</h2>
+          <h2>{{errorText.solution}}</h2>
+        </b-card>
+      </b-col>
+    </b-row>
+    <b-row class="mb-2" v-show="location !== '' && !showSpinner && error === ''">
       <b-col class="pl-0">
-        <Map v-show="numReady == 2" :location="location" @ready="onReady"/>
+        <Map v-show="numReady == 2" :location="location" @ready="onReady" />
       </b-col>
       <b-col class="pr-0">
         <Weather v-show="numReady == 2" :location="location" @ready="onReady" @error="onError" />
@@ -55,7 +59,7 @@ export default {
   },
   data() {
     return {
-      location: {formatted: ""},
+      location: { formatted: "" },
       numReady: 0,
       disableInput: false,
       error: "",

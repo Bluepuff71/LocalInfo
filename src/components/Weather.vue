@@ -1,7 +1,6 @@
 <template>
-  <b-card no-body v-if="currentWeather !== null && forecast !== null">
-    <b-card-body class="text-center p-2">
-      <b-tabs>
+  <b-card no-body class="text-center" v-if="currentWeather !== null && forecast !== null">
+    <b-tabs fill card>
         <b-tab title="Current" active>
           <i :class="weatherIcon" style="font-size: 90pt; line-height:normal"></i>
           <h2 class="text-capitalize">{{curWeatherDescription}}</h2>
@@ -9,35 +8,32 @@
           <h2>Humidity: {{currentWeather.main.humidity}}%</h2>
           <h2>Wind: {{currentWeather.wind.speed}}mph</h2>
         </b-tab>
-        <b-tab title="5-Day">
-          <b-carousel id="5day" :interval="0" v-model="slide" controls>
+        <b-tab title="5-Day" lazy>
+          <b-carousel id="5day" :interval="10000" v-model="slide" controls>
             <b-carousel-slide
               :key="index"
               v-for="(day, index) in getForecast"
               img-blank
               img-alt="Blank image"
             >
-            <template #img>
-              <h2>{{day.date}}</h2>
-              <i :class="day.icon" style="font-size: 90pt; line-height:normal"></i>
-              <h2 class="text-capitalize">{{day.desc}}</h2>
-              <h2>Temp: {{day.avgs.minTemp}}°F/{{day.avgs.maxTemp}}°F</h2>
-              <h2>Humidity: {{day.avgs.humidity}}%</h2>
-              <h2>Wind: {{day.avgs.humidity}}mph</h2>
-            </template>
-            
+              <template #img>
+                <h2>{{day.date}}{{index === 0 ? ' (Today)' : ''}}{{index === 1 ? ' (Tomorrow)' : ''}}</h2>
+                <i :class="day.icon" style="font-size: 90pt; line-height:normal"></i>
+                <h2 class="text-capitalize">{{day.desc}}</h2>
+                <h2>Temp: {{day.avgs.minTemp}}°F/{{day.avgs.maxTemp}}°F</h2>
+                <h2>Humidity: {{day.avgs.humidity}}%</h2>
+                <h2>Wind: {{day.avgs.humidity}}mph</h2>
+              </template>
             </b-carousel-slide>
           </b-carousel>
         </b-tab>
       </b-tabs>
-    </b-card-body>
   </b-card>
 </template>
 <script>
 import axios from "axios";
 import {
   BCard,
-  BCardBody,
   BTab,
   BTabs,
   BCarousel,
@@ -46,7 +42,6 @@ import {
 export default {
   components: {
     BCard,
-    BCardBody,
     BTab,
     BTabs,
     BCarousel,
@@ -243,7 +238,7 @@ export default {
 .carousel-control-prev-icon {
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3e%3c/svg%3e") !important;
 }
-.carousel-control-next-icon{
+.carousel-control-next-icon {
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3e%3c/svg%3e") !important;
 }
 </style>
