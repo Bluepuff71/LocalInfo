@@ -1,8 +1,8 @@
 <template>
   <b-card no-body class="text-center" v-if="currentWeather !== null && forecast !== null">
     <b-tabs fill card>
-        <b-tab title="Current" active>
-          <i :class="weatherIcon" style="font-size: 90pt; line-height:normal"></i>
+        <b-tab title="Current" active style="padding:2%">
+          <i :class="weatherIcon" style="font-size: 20vh; line-height:normal"></i>
           <h2 class="text-capitalize">{{curWeatherDescription}}</h2>
           <h2>Temp: {{currentTemp}}°F</h2>
           <h2>Humidity: {{currentWeather.main.humidity}}%</h2>
@@ -241,4 +241,9 @@ export default {
 .carousel-control-next-icon {
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3e%3c/svg%3e") !important;
 }
+  h2{
+    font-size: 5vh;
+
+    line-height:normal;
+  }
 </style>

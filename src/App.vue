@@ -1,5 +1,5 @@
 <template>
-  <b-container>
+  <b-container style="max-width:90%">
     <b-row align-h="center">
       <h1 class="display-1 mb-0">Local Info</h1>
     </b-row>
@@ -139,5 +139,5 @@ export default {
       });
     }
   }
-};
+}
 </script>
